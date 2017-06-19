@@ -1,7 +1,7 @@
 #!/bin/bash
 # Download the complete bing.com/gallery and some more pictures from bing.com sources
 
-if [ -z $(curl -s --head www.bing.com | head -n 1 | cut -d ' ' -f2) ]; then
+if [ -z $(curl -s --head www.bing.com | head -n1 | cut -d ' ' -f2) ]; then
 	echo "bing.com is not reachable."
 	exit 1
 fi
@@ -20,7 +20,7 @@ for i in ${varPicRes}; do
 			if [ -n "${varPicName}" ]; then
 				for j in ${varPicName}; do
 					for k in ${varPicURL}; do
-						if [ $(curl -s --head ${k}${j}_${i}.jpg | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+						if [ $(curl -s --head ${k}${j}_${i}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 							mkdir -v -p ${i}
 							break
 						fi
@@ -31,7 +31,7 @@ for i in ${varPicRes}; do
 				done
 			fi
 		fi
-		if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+		if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 			for j in $(seq 999); do
 				varPicNameL=$(curl -s "http://www.bing.com/HPImageArchive.aspx?format=js&idx=$((${j}-3))&n=8&mkt=en-US" | tr : "\n" | tr "\"" "\n" | grep .jpg)
 				if [ -z "${varPicNameL}" ]; then
@@ -45,7 +45,7 @@ for i in ${varPicRes}; do
 					fi
 				fi
 				for k in ${varPicNameL}; do
-					if [ $(curl -s --head www.bing.com/${k}_${i}.jpg | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+					if [ $(curl -s --head www.bing.com/${k}_${i}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 						mkdir -v -p ${i}
 						break
 					fi
@@ -58,7 +58,7 @@ for i in ${varPicRes}; do
 		fi
 	fi
 	if [ ! -d ROW_${i} ]; then
-		if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=0" | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+		if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=0" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 			varPicPre=""
 			for j in $(seq 999); do
 				varPicNameL=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${j}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | grep jpg | cut -d "_" -f1,2)
@@ -68,7 +68,7 @@ for i in ${varPicRes}; do
 				if [ "${varPicPre}" == "${varPicNameL}" ]; then
 					break
 				fi
-				if [ $(curl -s --head ${varPicNameL}_${i}.jpg | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+				if [ $(curl -s --head ${varPicNameL}_${i}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 					mkdir -v -p ROW_${i}
 					break
 				fi
@@ -95,11 +95,11 @@ if [ $(curl -s --head "http://www.bing.com/gallery/home/browsedata?z=0" | head -
 				echo ${i} > lastpicture
 				for j in ${varPicRes}; do
 					for k in ${varPicURL}; do
-						if [ -z $(curl -s --head www.bing.com | head -n 1 | cut -d ' ' -f2) ]; then
+						if [ -z $(curl -s --head www.bing.com | head -n1 | cut -d ' ' -f2) ]; then
 							echo "bing.com is not reachable."
 							exit 1
 						fi
-						if [ $(curl -s --head ${k}${i}_${j}.jpg | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+						if [ $(curl -s --head ${k}${i}_${j}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 							wget -nv --directory-prefix=${j} ${k}${i}_${j}.jpg
 						fi
 						if [ -f ${j}/${i}_${j}.jpg ]; then
@@ -116,7 +116,7 @@ if [ $(curl -s --head "http://www.bing.com/gallery/home/browsedata?z=0" | head -
 fi
 
 #Get the future, current and past pictures from bing.com
-if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 	varPicSeq=1
 	for i in $(seq 999); do
 		varPicNameL=$(curl -s "http://www.bing.com/HPImageArchive.aspx?format=js&idx=$((${i}-3))&n=8&mkt=en-US" | tr : "\n" | tr "\"" "\n" | grep .jpg | cut -d "_" -f1,2)
@@ -138,11 +138,11 @@ if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n 1 | cu
 			for k in ${varPicRes}; do
 				if [ ! -f ${k}/$(echo -e "${varPicNameS}" | head -n${varCount} | tail -n1)_${k}.jpg ]; then
 					echo -e "${varPicNameS}" | head -n${varCount} | tail -n1 > lastpicture
-					if [ -z $(curl -s --head www.bing.com | head -n 1 | cut -d ' ' -f2) ]; then
+					if [ -z $(curl -s --head www.bing.com | head -n1 | cut -d ' ' -f2) ]; then
 						echo "bing.com is not reachable."
 						exit 1
 					fi
-					if [ $(curl -s --head www.bing.com/${j}_${k}.jpg | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+					if [ $(curl -s --head www.bing.com/${j}_${k}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 						wget -nv --directory-prefix=${k} bing.com/${j}_${k}.jpg
 					fi
 					if [ -f lastpicture ]; then
@@ -156,7 +156,7 @@ if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n 1 | cu
 fi
 
 #Get some more pictures by using the Bing Desktop address
-if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=0" | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=0" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 	varPicPre=""
 	for i in $(seq 999); do
 		varPicNameL=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${i}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | grep jpg | cut -d "_" -f1,2)
@@ -170,11 +170,11 @@ if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPIma
 		for j in ${varPicRes}; do
 			if [ ! -f ROW_${j}/${varPicNameS}_${j}.jpg ]; then
 				echo ${varPicNameS} > lastpicture
-				if [ -z $(curl -s --head www.bing.com | head -n 1 | cut -d ' ' -f2) ]; then
+				if [ -z $(curl -s --head www.bing.com | head -n1 | cut -d ' ' -f2) ]; then
 					echo "bing.com is not reachable."
 					exit 1
 				fi
-				if [ $(curl -s --head ${varPicNameL}_${j}.jpg | head -n 1 | cut -d ' ' -f2) -eq 200 ]; then
+				if [ $(curl -s --head ${varPicNameL}_${j}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
 					wget -nv --directory-prefix="ROW_${j}" ${varPicNameL}_${j}.jpg
 				fi
 				if [ -f lastpicture ]; then
