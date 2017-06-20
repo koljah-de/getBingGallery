@@ -61,7 +61,7 @@ for i in ${varPicRes}; do
         if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=0" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
             varPicPre=""
             for j in $(seq 999); do
-                varPicNameL=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${j}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | grep .jpg | cut -d "_" -f1,2)
+                varPicNameL=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${j}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | grep jpg | cut -d "_" -f1,2)
                 if [ -z "${varPicNameL}" ]; then
                     break
                 fi
@@ -117,7 +117,7 @@ if [ $(curl -s --head "http://www.bing.com/gallery/home/browsedata?z=0" | head -
                         fi
                     done
                 done
-                if [ -f lastpicture ];then
+                if [ -f lastpicture ]; then
                     echo "" > lastpicture
                 fi
             fi
@@ -169,8 +169,8 @@ fi
 if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=0" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
     varPicPre=""
     for i in $(seq 999); do
-        varPicNameL=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${i}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | grep .jpg | cut -d "_" -f1,2)
-        varPicNameS=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${i}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | tr "/" "\n" | grep .jpg | cut -d "_" -f1,2)
+        varPicNameL=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${i}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | grep jpg | cut -d "_" -f1,2)
+        varPicNameS=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${i}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | tr "/" "\n" | grep jpg | cut -d "_" -f1,2)
         if [ -z "${varPicNameL}" ]; then
             break
         fi
