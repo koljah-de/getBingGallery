@@ -15,66 +15,10 @@ mkdir -v -p ./BingGalleryPictures
 cd ./BingGalleryPictures
 for i in ${varPicRes}; do
     if [ ! -d ${i} ]; then
-        if [ $(curl -s --head "http://www.bing.com/gallery/home/browsedata?z=0" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
-            varPicName=$(curl -s "http://www.bing.com/gallery/home/browsedata?z=0" | tr "]" "\n" | grep imageNames | tr "[" "\n" | grep -v imageNames | tr "," "\n" | tr -d "\"")
-            if [ -n "${varPicName}" ]; then
-                for j in ${varPicName}; do
-                    for k in ${varPicURL}; do
-                        if [ $(curl -s --head ${k}${j}_${i}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
-                            mkdir -v -p ${i}
-                            break
-                        fi
-                    done
-                    if [ -d ${i} ]; then
-                        break
-                    fi
-                done
-            fi
-        fi
-        if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
-            for j in $(seq 999); do
-                varPicNameL=$(curl -s "http://www.bing.com/HPImageArchive.aspx?format=js&idx=$((${j}-3))&n=8&mkt=en-US" | tr : "\n" | tr "\"" "\n" | grep .jpg)
-                if [ -z "${varPicNameL}" ]; then
-                    varPicSeq=$((${j} + 1))
-                    continue
-                fi
-                if [ ${j} -gt $varPicSeq ]; then
-                    varPicNameL=$(echo -e "${varPicNameL}" | tail -n1)
-                    if [ "${varPicPre}" == "${varPicNameL}" ]; then
-                        break
-                    fi
-                fi
-                for k in ${varPicNameL}; do
-                    if [ $(curl -s --head www.bing.com/${k}_${i}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
-                        mkdir -v -p ${i}
-                        break
-                    fi
-                done
-                if [ -d ${i} ]; then
-                    break
-                fi
-                varPicPre=${k}
-            done
-        fi
+        mkdir -v -p ${i}
     fi
-    if [ ! -d ROW_${i} ]; then
-        if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=0" | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
-            varPicPre=""
-            for j in $(seq 999); do
-                varPicNameL=$(curl -s "http://az517271.vo.msecnd.net/TodayImageService.svc/HPImageArchive?mkt=en-ww&idx=$((${j}-1))" | tr "<" "\n" | grep fullImageUrl | tr ">" "\n" | tr ' ' "\n" | grep jpg | cut -d "_" -f1,2)
-                if [ -z "${varPicNameL}" ]; then
-                    break
-                fi
-                if [ "${varPicPre}" == "${varPicNameL}" ]; then
-                    break
-                fi
-                if [ $(curl -s --head ${varPicNameL}_${i}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
-                    mkdir -v -p ROW_${i}
-                    break
-                fi
-                varPicPre=${varPicNameL}
-            done
-        fi
+    if [[ ! -d ROW_${i} && "${i}" != "958x512" ]]; then
+        mkdir -v -p ROW_${i}
     fi
 done
 
