@@ -23,21 +23,21 @@ for i in ${varPicRes}; do
 done
 
 #If there was an error, delete the last picture
-if [ -f lastpicture ]; then
-    if [ -z "$(cat lastpicture | grep _ROW)" ]; then
+if [ -f ".lastpicture" ]; then
+    if [ -z "$(cat ".lastpicture" | grep _ROW)" ]; then
         for i in ${varPicRes}; do
-            if [ -f ${i}/$(cat lastpicture)_${i}.jpg ]; then
-                rm -v ${i}/$(cat lastpicture)_${i}.jpg
+            if [ -f ${i}/$(cat ".lastpicture")_${i}.jpg ]; then
+                rm -v ${i}/$(cat ".lastpicture")_${i}.jpg
             fi
         done
     else
         for i in ${varPicRes}; do
-            if [ -f ROW_${i}/$(cat lastpicture)_${i}.jpg ]; then
-                rm -v ROW_${i}/$(cat lastpicture)_${i}.jpg
+            if [ -f ROW_${i}/$(cat ".lastpicture")_${i}.jpg ]; then
+                rm -v ROW_${i}/$(cat ".lastpicture")_${i}.jpg
             fi
         done
     fi
-    rm lastpicture
+    rm ".lastpicture"
 fi
 
 #Get all the pictures from bing.com/gallery
@@ -46,7 +46,7 @@ if [ $(curl -s --head "http://www.bing.com/gallery/home/browsedata?z=0" | head -
     if [ -n "${varPicName}" ]; then
         for i in ${varPicName}; do
             if [[ ! -f 1920x1200/${i}_1920x1200.jpg && ! -f 1920x1080/${i}_1920x1080.jpg && ! -f 1366x768/${i}_1366x768.jpg && ! -f 958x512/${i}_958x512.jpg ]]; then
-                echo ${i} > lastpicture
+                echo ${i} > ".lastpicture"
                 for j in ${varPicRes}; do
                     for k in ${varPicURL}; do
                         if [ -z $(curl -s --head www.bing.com | head -n1 | cut -d ' ' -f2) ]; then
@@ -61,8 +61,8 @@ if [ $(curl -s --head "http://www.bing.com/gallery/home/browsedata?z=0" | head -
                         fi
                     done
                 done
-                if [ -f lastpicture ]; then
-                    echo "" > lastpicture
+                if [ -f ".lastpicture" ]; then
+                    echo "" > ".lastpicture"
                 fi
             fi
         done
@@ -90,8 +90,8 @@ if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n1 | cut
         for j in ${varPicNameL}; do
             varCount=$((${varCount}+1))
             for k in ${varPicRes}; do
-                if [ ! -f ${k}/$(echo -e "${varPicNameS}" | head -n${varCount} | tail -n1)_${k}.jpg ]; then
-                    echo -e "${varPicNameS}" | head -n${varCount} | tail -n1 > lastpicture
+                if [[ ! -f ${k}/$(echo -e "${varPicNameS}" | head -n${varCount} | tail -n1)_${k}.jpg && "${k}" != "958x512" ]]; then
+                    echo -e "${varPicNameS}" | head -n${varCount} | tail -n1 > ".lastpicture"
                     if [ -z $(curl -s --head www.bing.com | head -n1 | cut -d ' ' -f2) ]; then
                         echo "bing.com is not reachable."
                         exit 1
@@ -99,8 +99,8 @@ if [ $(curl -s --head "http://www.bing.com/HPImageArchive.aspx" | head -n1 | cut
                     if [ $(curl -s --head www.bing.com/${j}_${k}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
                         wget -nv --directory-prefix=${k} bing.com/${j}_${k}.jpg
                     fi
-                    if [ -f lastpicture ]; then
-                        echo "" > lastpicture
+                    if [ -f ".lastpicture" ]; then
+                        echo "" > ".lastpicture"
                     fi
                 fi
             done
@@ -122,8 +122,8 @@ if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPIma
             break
         fi
         for j in ${varPicRes}; do
-            if [ ! -f ROW_${j}/${varPicNameS}_${j}.jpg ]; then
-                echo ${varPicNameS} > lastpicture
+            if [[ ! -f ROW_${j}/${varPicNameS}_${j}.jpg && "${j}" != "958x512" ]]; then
+                echo ${varPicNameS} > ".lastpicture"
                 if [ -z $(curl -s --head www.bing.com | head -n1 | cut -d ' ' -f2) ]; then
                     echo "bing.com is not reachable."
                     exit 1
@@ -131,8 +131,8 @@ if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPIma
                 if [ $(curl -s --head ${varPicNameL}_${j}.jpg | head -n1 | cut -d ' ' -f2) -eq 200 ]; then
                     wget -nv --directory-prefix="ROW_${j}" ${varPicNameL}_${j}.jpg
                 fi
-                if [ -f lastpicture ]; then
-                    echo "" > lastpicture
+                if [ -f ".lastpicture" ]; then
+                    echo "" > ".lastpicture"
                 fi
             fi
         done
@@ -140,8 +140,8 @@ if [ $(curl -s --head "http://az517271.vo.msecnd.net/TodayImageService.svc/HPIma
     done
 fi
 
-if [ -f lastpicture ]; then
-    rm lastpicture
+if [ -f ".lastpicture" ]; then
+    rm ".lastpicture"
 fi
 
 exit 0
